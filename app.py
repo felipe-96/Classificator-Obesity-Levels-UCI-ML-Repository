@@ -38,13 +38,6 @@ CLASE_COLORS = [
     "#7B241C",   # Obesity_Type_III     — granate
 ]
 
-COLORES_NIVEL = {
-    'Insufficient_Weight': '#1ABC9C', 'Normal_Weight': '#27A96F',
-    'Overweight_Level_I': '#F39C12',  'Overweight_Level_II': '#E05C2A',
-    'Obesity_Type_I': '#C0392B',      'Obesity_Type_II': '#8E44AD',
-    'Obesity_Type_III': '#2C3E50',
-}
-
 ORDEN_CLASES = [
     "Insufficient_Weight", "Normal_Weight",
     "Overweight_Level_I",  "Overweight_Level_II",
@@ -624,149 +617,178 @@ elif pagina == "📊  Resultados del Modelo":
                      use_container_width=True)
 
 
-# ═══════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════
 # PÁGINA 3 — PREDICCIÓN
-# ═══════════════════════════════════════════════════════════
-elif pagina == "🔮 Predecir Nuevo Dato":
+# ══════════════════════════════════════════════════════════
+elif pagina == "🔮  Predecir Nuevo Dato":
     st.title("🔮 Predecir Nivel de Obesidad")
-    st.markdown("Ingresa los datos de una persona. El modelo **Random Forest** clasificará su nivel de obesidad según los criterios de la OMS.")
-    st.info("💡 Completa todos los campos y presiona **Predecir** al final del formulario.")
+    st.markdown("Ingresa los datos de una persona y el modelo **Random Forest** clasificará su nivel de obesidad según criterios de la **OMS**.")
+
+    st.markdown(f"""
+    <div class="uss-card" style="border-left:5px solid {USS_RED};">
+        💡 Completa todos los campos del formulario y presiona <b>Predecir</b>.
+        El modelo calculará automáticamente el IMC y retornará la clase con su probabilidad.
+    </div>
+    """, unsafe_allow_html=True)
 
     with st.form("form_pred"):
-        st.subheader("📋 Datos personales y hábitos")
-        col1, col2, col3 = st.columns(3)
+        c1, c2, c3 = st.columns(3)
 
-        with col1:
-            st.markdown("**🧍 Datos físicos**")
-            Gender = st.selectbox("Género", ["Male", "Female"],
-                                   format_func=lambda x: "Masculino" if x=="Male" else "Femenino")
+        with c1:
+            st.markdown(f"#### 🧍 Datos físicos")
+            Gender = st.selectbox("Género", ["Male","Female"],
+                                  format_func=lambda x:"Masculino" if x=="Male" else "Femenino")
             Age    = st.number_input("Edad (años)", 14, 70, 25, step=1)
             Height = st.number_input("Altura (m)", 1.45, 2.00, 1.70, step=0.01, format="%.2f")
             Weight = st.number_input("Peso (kg)", 39.0, 173.0, 70.0, step=0.5, format="%.1f")
 
-        with col2:
-            st.markdown("**🥗 Hábitos alimentarios**")
-            fam_hist = st.selectbox("Historial familiar de sobrepeso",
-                                    ["yes","no"], format_func=lambda x: "Sí" if x=="yes" else "No")
-            FAVC = st.selectbox("¿Come frecuentemente comida hipercalórica?",
-                                ["yes","no"], format_func=lambda x: "Sí" if x=="yes" else "No")
+        with c2:
+            st.markdown(f"#### 🥗 Hábitos alimentarios")
+            fam_hist = st.selectbox("Historial familiar de sobrepeso", ["yes","no"],
+                                    format_func=lambda x:"Sí" if x=="yes" else "No")
+            FAVC = st.selectbox("¿Come frecuentemente comida hipercalórica?", ["yes","no"],
+                                format_func=lambda x:"Sí" if x=="yes" else "No")
             FCVC = st.select_slider("Frecuencia de consumo de verduras",
-                                    options=[1.0, 2.0, 3.0],
-                                    format_func=lambda x: {1.0:"Nunca",2.0:"A veces",3.0:"Siempre"}[x],
+                                    options=[1.0,2.0,3.0],
+                                    format_func=lambda x:{1.0:"Nunca",2.0:"A veces",3.0:"Siempre"}[x],
                                     value=2.0)
-            NCP  = st.select_slider("Número de comidas principales al día",
-                                    options=[1.0, 2.0, 3.0, 4.0], value=3.0)
-            CAEC = st.selectbox("Come entre comidas",
-                                ["no","Sometimes","Frequently","Always"],
-                                format_func=lambda x: {"no":"No","Sometimes":"A veces",
-                                                        "Frequently":"Frecuentemente","Always":"Siempre"}[x])
+            NCP  = st.select_slider("N° de comidas principales al día",
+                                    options=[1.0,2.0,3.0,4.0], value=3.0)
+            CAEC = st.selectbox("Come entre comidas", ["no","Sometimes","Frequently","Always"],
+                                format_func=lambda x:{"no":"No","Sometimes":"A veces",
+                                                       "Frequently":"Frecuentemente","Always":"Siempre"}[x])
             CH2O = st.select_slider("Consumo de agua diario",
-                                    options=[1.0, 2.0, 3.0],
-                                    format_func=lambda x: {1.0:"< 1 litro",2.0:"1-2 litros",3.0:"> 2 litros"}[x],
+                                    options=[1.0,2.0,3.0],
+                                    format_func=lambda x:{1.0:"< 1 litro",2.0:"1-2 litros",3.0:"> 2 litros"}[x],
                                     value=2.0)
 
-        with col3:
-            st.markdown("**🏃 Estilo de vida**")
+        with c3:
+            st.markdown(f"#### 🏃 Estilo de vida")
             SMOKE  = st.selectbox("¿Fuma?", ["no","yes"],
-                                  format_func=lambda x: "No" if x=="no" else "Sí")
+                                  format_func=lambda x:"No" if x=="no" else "Sí")
             SCC    = st.selectbox("¿Monitorea calorías?", ["no","yes"],
-                                  format_func=lambda x: "No" if x=="no" else "Sí")
+                                  format_func=lambda x:"No" if x=="no" else "Sí")
             FAF    = st.select_slider("Actividad física semanal",
-                                      options=[0.0, 1.0, 2.0, 3.0],
-                                      format_func=lambda x: {0.0:"Ninguna",1.0:"1-2 días",
-                                                              2.0:"2-4 días",3.0:"4-5 días"}[x],
+                                      options=[0.0,1.0,2.0,3.0],
+                                      format_func=lambda x:{0.0:"Ninguna",1.0:"1-2 días",
+                                                             2.0:"2-4 días",3.0:"4-5 días"}[x],
                                       value=1.0)
             TUE    = st.select_slider("Uso de tecnología al día",
-                                      options=[0.0, 1.0, 2.0],
-                                      format_func=lambda x: {0.0:"0-2h",1.0:"3-5h",2.0:">5h"}[x])
-            CALC   = st.selectbox("Consumo de alcohol",
-                                  ["no","Sometimes","Frequently","Always"],
-                                  format_func=lambda x: {"no":"No","Sometimes":"A veces",
-                                                          "Frequently":"Frecuentemente","Always":"Siempre"}[x])
-            MTRANS = st.selectbox("Medio de transporte habitual",
-                                  ["Public_Transportation","Walking","Automobile","Motorbike","Bike"],
-                                  format_func=lambda x: {"Public_Transportation":"Transporte público",
-                                                          "Walking":"A pie","Automobile":"Automóvil",
-                                                          "Motorbike":"Motocicleta","Bike":"Bicicleta"}[x])
+                                      options=[0.0,1.0,2.0],
+                                      format_func=lambda x:{0.0:"0-2h",1.0:"3-5h",2.0:">5h"}[x])
+            CALC   = st.selectbox("Consumo de alcohol", ["no","Sometimes","Frequently","Always"],
+                                  format_func=lambda x:{"no":"No","Sometimes":"A veces",
+                                                         "Frequently":"Frecuentemente","Always":"Siempre"}[x])
+            MTRANS = st.selectbox("Medio de transporte", ["Public_Transportation","Walking",
+                                                           "Automobile","Motorbike","Bike"],
+                                  format_func=lambda x:{"Public_Transportation":"Transporte público",
+                                                         "Walking":"A pie","Automobile":"Automóvil",
+                                                         "Motorbike":"Motocicleta","Bike":"Bicicleta"}[x])
 
         submitted = st.form_submit_button("🔍 Predecir nivel de obesidad",
                                           use_container_width=True, type="primary")
 
     if submitted:
-        datos = {
-            'Gender': Gender, 'Age': float(Age), 'Height': float(Height), 'Weight': float(Weight),
-            'family_history_with_overweight': fam_hist, 'FAVC': FAVC,
-            'FCVC': float(FCVC), 'NCP': float(NCP), 'CAEC': CAEC,
-            'SMOKE': SMOKE, 'CH2O': float(CH2O), 'SCC': SCC,
-            'FAF': float(FAF), 'TUE': float(TUE), 'CALC': CALC, 'MTRANS': MTRANS,
-        }
+        datos = dict(Gender=Gender, Age=float(Age), Height=float(Height), Weight=float(Weight),
+                     family_history_with_overweight=fam_hist, FAVC=FAVC,
+                     FCVC=float(FCVC), NCP=float(NCP), CAEC=CAEC,
+                     SMOKE=SMOKE, CH2O=float(CH2O), SCC=SCC,
+                     FAF=float(FAF), TUE=float(TUE), CALC=CALC, MTRANS=MTRANS)
         try:
             clase, proba, clases_le = predecir(datos, R)
-            imc   = float(Weight) / (float(Height) ** 2)
-            color = COLORES_NIVEL.get(clase, '#888')
-            nombre_es = LABEL_MAP.get(clase, clase)
-            idx_pred  = list(clases_le).index(clase)
-            confianza = proba[idx_pred]
+            imc     = float(Weight) / float(Height)**2
+            color_c = COLOR_MAP.get(clase, USS_RED)
+            nom_es  = LABEL_MAP.get(clase, clase)
+            conf    = proba[list(clases_le).index(clase)]
 
             st.divider()
             st.subheader("🎯 Resultado de la Predicción")
 
-            cr1, cr2 = st.columns([1, 2])
-            with cr1:
+            res1, res2 = st.columns([1, 2])
+            with res1:
                 st.markdown(f"""
-                <div style="background:{color}22;border-left:6px solid {color};
-                            padding:20px;border-radius:10px;text-align:center;">
-                    <h2 style="color:{color};margin:0;">{nombre_es}</h2>
-                    <p style="color:#666;margin:6px 0 0 0;font-size:13px;">Clasificación OMS · Random Forest</p>
-                    <hr style="border-color:{color}44;margin:12px 0;">
-                    <p style="font-size:26px;font-weight:bold;color:{color};margin:0;">IMC: {imc:.1f}</p>
-                    <p style="color:#888;font-size:12px;margin:2px 0 0 0;">kg/m²</p>
+                <div style="background:white;border-radius:14px;padding:28px 20px;
+                            border-top:6px solid {color_c};
+                            box-shadow:0 4px 18px rgba(0,0,0,0.10);text-align:center;">
+                    <div style="font-size:42px;">⚕️</div>
+                    <div style="font-size:22px;font-weight:800;color:{color_c};margin:10px 0 4px;">
+                        {nom_es}</div>
+                    <div style="font-size:12px;color:#888;">Clasificación OMS · Random Forest</div>
+                    <hr style="border-color:{color_c}44;margin:14px 0;">
+                    <div style="font-size:34px;font-weight:900;color:{USS_NAVY};">
+                        {imc:.1f}</div>
+                    <div style="font-size:12px;color:#888;margin-top:2px;">IMC (kg/m²)</div>
+                    <hr style="border-color:{color_c}44;margin:14px 0;">
+                    <div style="font-size:28px;font-weight:800;color:{color_c};">
+                        {conf:.1%}</div>
+                    <div style="font-size:12px;color:#888;">Confianza del modelo</div>
                 </div>
                 """, unsafe_allow_html=True)
-                st.markdown("<br>", unsafe_allow_html=True)
-                st.metric("Confianza del modelo", f"{confianza:.1%}")
-                st.progress(float(confianza))
 
-            with cr2:
-                fig, ax = plt.subplots(figsize=(8, 4))
-                etq_es = [LABEL_MAP.get(c, c) for c in clases_le]
-                cols_b = [color if c == clase else '#DDDDDD' for c in clases_le]
-                bars   = ax.barh(etq_es, proba, color=cols_b,
-                                 edgecolor='white', alpha=0.9, height=0.6)
-                for bar, val in zip(bars, proba):
-                    if val > 0.01:
-                        ax.text(val+0.005, bar.get_y()+bar.get_height()/2,
-                                f'{val:.1%}', va='center', fontsize=9, fontweight='bold')
-                ax.set_xlabel('Probabilidad')
-                ax.set_title('Distribución de probabilidades por clase', fontweight='bold')
-                ax.set_xlim(0, 1.15)
-                ax.grid(axis='x', alpha=0.3)
-                plt.tight_layout()
-                st.pyplot(fig); plt.close()
+            with res2:
+                # Gauge confianza
+                fig_g = go.Figure(go.Indicator(
+                    mode="gauge+number",
+                    value=conf*100,
+                    number=dict(suffix="%", font=dict(size=36, color=USS_NAVY)),
+                    gauge=dict(
+                        axis=dict(range=[0,100], tickfont=dict(size=11)),
+                        bar=dict(color=color_c),
+                        bgcolor="white",
+                        steps=[
+                            dict(range=[0,50],  color="#FAE8EB"),
+                            dict(range=[50,75], color="#FDDDE4"),
+                            dict(range=[75,100],color="#FBBECB"),
+                        ],
+                        threshold=dict(line=dict(color=USS_NAVY,width=3), value=conf*100)
+                    ),
+                    title=dict(text="Confianza del modelo", font=dict(size=14, color=USS_NAVY))
+                ))
+                uss_layout(fig_g, height=250)
+                fig_g.update_layout(margin=dict(t=40,b=10,l=30,r=30))
+                st.plotly_chart(fig_g, use_container_width=True)
+
+                # Barras de probabilidad por clase
+                etq_es = [LABEL_MAP.get(c,c) for c in clases_le]
+                cols_b = [color_c if c==clase else "#DDDDDD" for c in clases_le]
+                fig_p  = go.Figure(go.Bar(
+                    x=proba, y=etq_es, orientation="h",
+                    marker_color=cols_b,
+                    text=[f"{v:.1%}" for v in proba],
+                    textposition="outside",
+                    hovertemplate="<b>%{y}</b><br>Probabilidad: %{x:.2%}<extra></extra>",
+                ))
+                uss_layout(fig_p, "Distribución de probabilidades por clase", height=300)
+                fig_p.update_xaxes(range=[0,1.15], title="Probabilidad")
+                fig_p.update_layout(showlegend=False)
+                st.plotly_chart(fig_p, use_container_width=True)
 
             st.divider()
-            ci1, ci2 = st.columns(2)
-            with ci1:
+
+            # Tabla resumen + referencia IMC
+            ti1, ti2 = st.columns(2)
+            with ti1:
                 st.markdown("#### 📌 Datos ingresados")
                 st.dataframe(pd.DataFrame({
-                    'Variable': ['Edad','Altura','Peso','IMC calculado',
-                                 'Actividad física','Agua diaria','Hist. familiar'],
-                    'Valor': [f'{Age} años', f'{float(Height):.2f} m', f'{float(Weight):.1f} kg',
-                              f'{imc:.1f} kg/m²',
+                    "Variable": ["Edad","Altura","Peso","IMC calculado",
+                                 "Actividad física","Agua diaria","Hist. familiar sobrepeso"],
+                    "Valor": [f"{Age} años", f"{float(Height):.2f} m",
+                              f"{float(Weight):.1f} kg", f"{imc:.1f} kg/m²",
                               {0.0:"Ninguna",1.0:"1-2 días",2.0:"2-4 días",3.0:"4-5 días"}[FAF],
-                              {1.0:"<1L",2.0:"1-2L",3.0:">2L"}[CH2O],
+                              {1.0:"< 1L",2.0:"1-2L",3.0:"> 2L"}[CH2O],
                               "Sí" if fam_hist=="yes" else "No"]
                 }), use_container_width=True, hide_index=True)
 
-            with ci2:
+            with ti2:
                 st.markdown("#### 🏥 Referencia IMC (OMS)")
+                flechas = ["◀ Tu IMC" if imc<18.5 else "",
+                           "◀ Tu IMC" if 18.5<=imc<25 else "",
+                           "◀ Tu IMC" if 25<=imc<30 else "",
+                           "◀ Tu IMC" if imc>=30 else ""]
                 st.dataframe(pd.DataFrame({
-                    'Rango IMC': ['< 18.5','18.5 – 24.9','25.0 – 29.9','≥ 30'],
-                    'Categoría': ['Bajo peso','Normal','Sobrepeso','Obesidad'],
-                    '': ['◀ Tu IMC' if imc < 18.5 else '',
-                         '◀ Tu IMC' if 18.5 <= imc < 25 else '',
-                         '◀ Tu IMC' if 25 <= imc < 30 else '',
-                         '◀ Tu IMC' if imc >= 30 else '']
+                    "Rango IMC":   ["< 18.5","18.5 – 24.9","25.0 – 29.9","≥ 30"],
+                    "Categoría":   ["Bajo peso","Normal","Sobrepeso","Obesidad"],
+                    "":            flechas
                 }), use_container_width=True, hide_index=True)
 
         except Exception as e:
