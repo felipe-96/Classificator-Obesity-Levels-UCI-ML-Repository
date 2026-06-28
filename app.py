@@ -12,19 +12,27 @@ import streamlit as st
 
 st.markdown(f"""
 <style>
-.stApp { background-color: {USS_GRAY}; color: {USS_WHITE}; }
+/* 1. Usamos doble llave para la estructura CSS y simple para las variables */
+.stApp {{ 
+    background-color: {USS_GRAY}; 
+    color: {USS_WHITE}; 
+}}
 
-h1, h2, h3 { color: {USS_LIGHT} !important; }
+h1, h2, h3 {{ 
+    color: {USS_LIGHT} !important; 
+}}
 
-[data-testid="stSidebar"] {
+/* 2. Doble llave aquí para que Python no se confunda con el selector del Sidebar */
+[data-testid="stSidebar"] {{
     background: linear-gradient(180deg, #02050A 0%, {USS_NAVY} 100%);
-}
+}}
 
-.stButton > button {
+/* 3. Corregido: Se eliminaron las llaves internas que envolvían al background */
+.stButton > button {{
     background: {USS_PRIMARY};
     color: white;
     border-radius: 8px;
-}
+}}
 </style>
 """, unsafe_allow_html=True)
 
