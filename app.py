@@ -1,3 +1,42 @@
+
+# ===== THEME DARK USS =====
+USS_PRIMARY   = "#1E3A5F"
+USS_NAVY      = "#0F2747"
+USS_ACCENT    = "#2C5D8A"
+USS_LIGHT     = "#E8F1FA"
+USS_GRAY      = "#0B0F14"
+USS_DARK      = "#05070A"
+USS_WHITE     = "#FFFFFF"
+
+import streamlit as st
+
+st.markdown(f"""
+<style>
+.stApp { background-color: {USS_GRAY}; color: {USS_WHITE}; }
+
+h1, h2, h3 { color: {USS_LIGHT} !important; }
+
+[data-testid="stSidebar"] {
+    background: linear-gradient(180deg, #02050A 0%, {USS_NAVY} 100%);
+}
+
+.stButton > button {
+    background: {USS_PRIMARY};
+    color: white;
+    border-radius: 8px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+try:
+    st.sidebar.image("logo_uss.png", use_column_width=True)
+except:
+    pass
+
+
+import warnings
+warnings.filterwarnings('ignore')
+
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -16,13 +55,13 @@ import os
 # ══════════════════════════════════════════
 # PALETA USS + CONFIG
 # ══════════════════════════════════════════
-USS_PRIMARY   = "#1E3A5F"
-USS_NAVY      = "#0F2747"
-USS_GRAY      = "#F4F6F8"
-USS_DARK      = "#1C1F26"
-USS_WHITE     = "#FFFFFF"
-USS_ACCENT    = "#2C5D8A"   # rojo más claro para hover
-USS_LIGHT     = "#E8F1FA"   # rojo muy claro fondo
+USS_PRIMARY      = "#C8102E"
+USS_NAVY     = "#1A2B4A"
+USS_GRAY     = "#F4F4F4"
+USS_DARK     = "#212529"
+USS_WHITE    = "#FFFFFF"
+USS_ACCENT   = "#E8324A"   # rojo más claro para hover
+USS_LIGHT    = "USS_LIGHT"   # rojo muy claro fondo
 
 # Paleta de 7 clases (degradado de verde a rojo oscuro)
 CLASE_COLORS = [
