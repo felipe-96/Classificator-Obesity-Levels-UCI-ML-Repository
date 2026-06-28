@@ -697,7 +697,7 @@ elif pagina == "🔮  Predecir Nuevo Dato":
         try:
             clase, proba, clases_le = predecir(datos, R)
             imc     = float(Weight) / float(Height)**2
-            color_c = COLOR_MAP.get(clase, USS_RED)
+            color_c = "#0F2747"
             nom_es  = LABEL_MAP.get(clase, clase)
             conf    = proba[list(clases_le).index(clase)]
 
@@ -715,13 +715,13 @@ elif pagina == "🔮  Predecir Nuevo Dato":
                         {nom_es}</div>
                     <div style="font-size:12px;color:#888;">Clasificación OMS · Random Forest</div>
                     <hr style="border-color:{color_c}44;margin:14px 0;">
-                    <div style="font-size:34px;font-weight:900;color:{USS_NAVY};">
+                    <div style="font-size:34px;font-weight:900;color:{"#0F2747"};">
                         {imc:.1f}</div>
                     <div style="font-size:12px;color:#888;margin-top:2px;">IMC (kg/m²)</div>
                     <hr style="border-color:{color_c}44;margin:14px 0;">
                     <div style="font-size:28px;font-weight:800;color:{color_c};">
                         {conf:.1%}</div>
-                    <div style="font-size:12px;color:#888;">Confianza del modelo</div>
+                    <div style="font-size:12px;color:"#2C5D8A";">Confianza del modelo</div>
                 </div>
                 """, unsafe_allow_html=True)
 
@@ -730,15 +730,15 @@ elif pagina == "🔮  Predecir Nuevo Dato":
                 fig_g = go.Figure(go.Indicator(
                     mode="gauge+number",
                     value=conf*100,
-                    number=dict(suffix="%", font=dict(size=36, color=USS_NAVY)),
+                    number=dict(suffix="%", font=dict(size=36, color="#0F2747")),
                     gauge=dict(
                         axis=dict(range=[0,100], tickfont=dict(size=11)),
                         bar=dict(color=color_c),
-                        bgcolor="white",
+                        bgcolor="black",
                         steps=[
-                            dict(range=[0,50],  color="#FAE8EB"),
-                            dict(range=[50,75], color="#FDDDE4"),
-                            dict(range=[75,100],color="#FBBECB"),
+                            dict(range=[0,50],  color="#F0F0F0"),
+                            dict(range=[50,75], color="#D3D3D3"),
+                            dict(range=[75,100],color="#A9A9A9"),
                         ],
                         threshold=dict(line=dict(color=USS_NAVY,width=3), value=conf*100)
                     ),
@@ -761,6 +761,26 @@ elif pagina == "🔮  Predecir Nuevo Dato":
                 uss_layout(fig_p, "Distribución de probabilidades por clase", height=300)
                 fig_p.update_xaxes(range=[0,1.15], title="Probabilidad")
                 fig_p.update_layout(showlegend=False)
+                # --- CONFIGURACIÓN DEL FONDO AZUL OSCURO Y CONTRASTE ---
+                fig_p.update_layout(
+                    plot_bgcolor="#1E293B",   # Azul oscuro (Slate 800) para el área del gráfico
+                    paper_bgcolor="#0F172A",  # Azul más oscuro (Slate 900) para el fondo total
+                    font=dict(color="#F8FAFC"), # Texto general en blanco hueso para que resalte
+                    title_font=dict(color="#F8FAFC") # Título en blanco
+                )
+
+                # Ajustar las líneas de los ejes para que combinen con el fondo oscuro
+                fig_p.update_xaxes(
+                    showgrid=True, 
+                    gridcolor="#334155",  # Líneas de cuadrícula sutiles
+                    linecolor="#475569",  # Línea del eje
+                    title_font=dict(color="#94A3B8"),
+                    tickfont=dict(color="#94A3B8")
+                )
+                fig_p.update_yaxes(
+                    linecolor="#475569", 
+                    tickfont=dict(color="#F8FAFC") # Etiquetas de las clases bien legibles
+                )
                 st.plotly_chart(fig_p, use_container_width=True)
 
             st.divider()
