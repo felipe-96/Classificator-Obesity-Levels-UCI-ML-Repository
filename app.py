@@ -66,17 +66,23 @@ html,body,[class*="css"]{{font-family:'Inter',sans-serif!important;color:{TEXT};
 [data-testid="stSidebar"] *{{color:{TEXT}!important;}}
 [data-testid="stSidebar"] hr{{border-color:{BORDER}!important;}}
 
-/* Radio — eliminar burbuja y barra vacía */
-[data-testid="stSidebar"] [data-testid="stRadio"] > div > div:first-child{{display:none!important;}}
-[data-testid="stSidebar"] [data-testid="stRadio"] label{{
-    background:{CARD};border-radius:8px;padding:10px 14px!important;
-    margin:3px 0!important;border:1px solid {BORDER};display:block;
-    cursor:pointer;transition:all .15s;font-size:13px!important;font-weight:500!important;}}
-[data-testid="stSidebar"] [data-testid="stRadio"] label:hover{{
+/* Radio nav — ocultar el círculo y dar aspecto de botones */
+[data-testid="stSidebar"] [data-testid="stRadio"] > label{{display:none!important;}}
+[data-testid="stSidebar"] [role="radiogroup"]{{gap:0!important;}}
+[data-testid="stSidebar"] [role="radiogroup"] > label{{
+    background:{CARD};border-radius:8px;padding:11px 14px!important;
+    margin:4px 0!important;border:1px solid {BORDER};
+    cursor:pointer;transition:all .15s;
+    width:100%;box-sizing:border-box;}}
+[data-testid="stSidebar"] [role="radiogroup"] > label:hover{{
     border-color:{GOLD};background:{CARD2};}}
-[data-testid="stSidebar"] [data-testid="stRadio"] label[data-checked="true"],
-[data-testid="stSidebar"] [data-testid="stRadio"] input:checked+div{{
-    border-color:{GOLD}!important;background:{CARD2}!important;}}
+[data-testid="stSidebar"] [role="radiogroup"] > label:has(input:checked){{
+    border-color:{GOLD}!important;background:{CARD2}!important;
+    box-shadow:inset 3px 0 0 {GOLD};}}
+/* ocultar el botón circular del radio */
+[data-testid="stSidebar"] [role="radiogroup"] > label > div:first-child{{display:none!important;}}
+[data-testid="stSidebar"] [role="radiogroup"] > label > div{{
+    font-size:13px!important;font-weight:500!important;color:{TEXT}!important;}}
 
 h1{{color:{WHITE}!important;font-weight:800!important;font-size:1.65rem!important;
     border-left:4px solid {GOLD};padding-left:14px;margin-bottom:2px!important;}}
@@ -257,9 +263,11 @@ with st.sidebar:
     # Logo USS
     if LOGO:
         st.markdown(
-            f'<div style="text-align:center;padding:22px 0 16px;">'
+            f'<div style="text-align:center;padding:18px 0 16px;">'
+            f'<div style="background:{WHITE};border-radius:10px;padding:12px 16px;'
+            f'display:inline-block;box-shadow:0 2px 10px rgba(0,0,0,.3);">'
             f'<img src="data:image/png;base64,{LOGO}" '
-            f'style="width:105px;filter:brightness(0) invert(1);opacity:.90;"></div>',
+            f'style="width:140px;display:block;"></div></div>',
             unsafe_allow_html=True)
     else:
         st.markdown(
