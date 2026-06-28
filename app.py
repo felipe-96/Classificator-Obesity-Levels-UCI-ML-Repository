@@ -1,6 +1,3 @@
-import warnings
-warnings.filterwarnings('ignore')
-
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -19,13 +16,13 @@ import os
 # ══════════════════════════════════════════
 # PALETA USS + CONFIG
 # ══════════════════════════════════════════
-USS_RED      = "#C8102E"
-USS_NAVY     = "#1A2B4A"
-USS_GRAY     = "#F4F4F4"
-USS_DARK     = "#212529"
-USS_WHITE    = "#FFFFFF"
-USS_ACCENT   = "#E8324A"   # rojo más claro para hover
-USS_LIGHT    = "#FAE8EB"   # rojo muy claro fondo
+USS_PRIMARY   = "#1E3A5F"
+USS_NAVY      = "#0F2747"
+USS_GRAY      = "#F4F6F8"
+USS_DARK      = "#1C1F26"
+USS_WHITE     = "#FFFFFF"
+USS_ACCENT    = "#2C5D8A"   # rojo más claro para hover
+USS_LIGHT     = "#E8F1FA"   # rojo muy claro fondo
 
 # Paleta de 7 clases (degradado de verde a rojo oscuro)
 CLASE_COLORS = [
@@ -72,24 +69,24 @@ st.markdown(f"""
   [data-testid="stSidebar"] .stRadio label {{ color: {USS_WHITE} !important; }}
 
   /* Títulos */
-  h1 {{ color: {USS_NAVY}; border-bottom: 4px solid {USS_RED}; padding-bottom: 8px; }}
+  h1 {{ color: {USS_NAVY}; border-bottom: 4px solid {USS_PRIMARY}; padding-bottom: 8px; }}
   h2 {{ color: {USS_NAVY}; }}
-  h3 {{ color: {USS_RED}; }}
+  h3 {{ color: {USS_PRIMARY}; }}
 
   /* Métricas */
   [data-testid="stMetric"] {{
       background: {USS_WHITE};
       border-radius: 10px;
       padding: 16px;
-      border-left: 5px solid {USS_RED};
+      border-left: 5px solid {USS_PRIMARY};
       box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   }}
   [data-testid="stMetricLabel"] {{ color: {USS_NAVY} !important; font-weight: 700; }}
-  [data-testid="stMetricValue"] {{ color: {USS_RED} !important; font-size: 2rem !important; }}
+  [data-testid="stMetricValue"] {{ color: {USS_PRIMARY} !important; font-size: 2rem !important; }}
 
   /* Botón principal */
   .stButton > button, .stFormSubmitButton > button {{
-      background: {USS_RED} !important;
+      background: {USS_PRIMARY} !important;
       color: white !important;
       border: none !important;
       border-radius: 8px !important;
@@ -111,11 +108,11 @@ st.markdown(f"""
       margin-bottom: 16px;
   }}
   .uss-result {{
-      border-left: 6px solid {USS_RED};
+      border-left: 6px solid {USS_PRIMARY};
   }}
 
   /* Divider */
-  hr {{ border-color: {USS_RED}44; }}
+  hr {{ border-color: {USS_PRIMARY}44; }}
 
   /* Selectbox / slider */
   [data-baseweb="select"] {{ border-color: {USS_NAVY} !important; }}
@@ -323,7 +320,7 @@ if pagina == "📈  Análisis Exploratorio":
             textposition="outside",
             hovertemplate="<b>%{x}</b><br>Frecuencia: %{y}<extra></extra>",
         ))
-        fig.add_hline(y=total/7, line_dash="dot", line_color=USS_RED,
+        fig.add_hline(y=total/7, line_dash="dot", line_color=USS_PRIMARY,
                       annotation_text="Distribución ideal", annotation_position="top right")
         uss_layout(fig, "Distribución de Clases", height=380)
         fig.update_xaxes(tickangle=-30)
@@ -396,7 +393,7 @@ if pagina == "📈  Análisis Exploratorio":
     for y_val, label, color in [
         (18.5, "OMS: Bajo peso (<18.5)",   "#27AE60"),
         (25.0, "OMS: Sobrepeso (≥25)",      "#F39C12"),
-        (30.0, "OMS: Obesidad (≥30)",       USS_RED),
+        (30.0, "OMS: Obesidad (≥30)",       USS_PRIMARY),
     ]:
         fig.add_hline(y=y_val, line_dash="dash", line_color=color, line_width=1.8,
                       annotation_text=label, annotation_position="top right",
@@ -485,7 +482,7 @@ elif pagina == "📊  Resultados del Modelo":
     # ── Validación cruzada ──
     st.subheader("Validación Cruzada Stratified 5-Fold")
     folds = [f"Fold {i+1}" for i in range(5)]
-    colores_cv = [USS_RED if v == R["cv"].max() else USS_NAVY for v in R["cv"]]
+    colores_cv = [USS_PRIMARY if v == R["cv"].max() else USS_NAVY for v in R["cv"]]
 
     fig = go.Figure()
     fig.add_trace(go.Bar(
@@ -495,13 +492,13 @@ elif pagina == "📊  Resultados del Modelo":
         textposition="outside",
         hovertemplate="<b>%{x}</b><br>Accuracy: %{y:.4f}<extra></extra>",
     ))
-    fig.add_hline(y=R["cv"].mean(), line_dash="dash", line_color=USS_RED, line_width=2,
+    fig.add_hline(y=R["cv"].mean(), line_dash="dash", line_color=USS_PRIMARY, line_width=2,
                   annotation_text=f"Promedio: {R['cv'].mean():.4f}",
-                  annotation_position="top right", annotation_font_color=USS_RED)
+                  annotation_position="top right", annotation_font_color=USS_PRIMARY)
     # banda ±std
     fig.add_hrect(y0=R["cv"].mean()-R["cv"].std(),
                   y1=R["cv"].mean()+R["cv"].std(),
-                  fillcolor=USS_RED, opacity=0.07, line_width=0,
+                  fillcolor=USS_PRIMARY, opacity=0.07, line_width=0,
                   annotation_text=f"±{R['cv'].std():.3f} std",
                   annotation_position="top left")
     uss_layout(fig, "Accuracy por Fold — Estabilidad del modelo", height=380)
@@ -517,7 +514,7 @@ elif pagina == "📊  Resultados del Modelo":
     fig = go.Figure(go.Heatmap(
         z=R["cm"],
         x=etq, y=etq,
-        colorscale=[[0,"#FFFFFF"],[0.001,"#FAE8EB"],[1,USS_RED]],
+        colorscale=[[0,"#FFFFFF"],[0.001,"USS_LIGHT"],[1,USS_PRIMARY]],
         text=R["cm"],
         texttemplate="%{text}",
         textfont=dict(size=13, color=USS_DARK),
@@ -536,7 +533,7 @@ elif pagina == "📊  Resultados del Modelo":
     st.subheader("Precision, Recall y F1-Score por Clase")
     clases_ = list(R["le_y"].classes_)
     metricas_names = ["precision","recall","f1-score"]
-    met_colors = [USS_NAVY, USS_RED, "#8E44AD"]
+    met_colors = [USS_NAVY, USS_PRIMARY, "#8E44AD"]
 
     fig = go.Figure()
     for met, col in zip(metricas_names, met_colors):
@@ -567,7 +564,7 @@ elif pagina == "📊  Resultados del Modelo":
 
     nombres_ord = [feat_names[i] for i in orden_imp]
     imp_ord     = importances[orden_imp]
-    colores_imp = [USS_RED if n in NUEVAS else USS_NAVY for n in nombres_ord]
+    colores_imp = [USS_PRIMARY if n in NUEVAS else USS_NAVY for n in nombres_ord]
 
     fig = go.Figure(go.Bar(
         x=imp_ord[::-1],
@@ -580,7 +577,7 @@ elif pagina == "📊  Resultados del Modelo":
     ))
     # leyenda manual
     fig.add_trace(go.Bar(x=[None], y=[None], name="Feature engineered",
-                         marker_color=USS_RED, showlegend=True))
+                         marker_color=USS_PRIMARY, showlegend=True))
     fig.add_trace(go.Bar(x=[None], y=[None], name="Feature original",
                          marker_color=USS_NAVY, showlegend=True))
     uss_layout(fig, "Feature Importance Gini — Rojo = variables de Feature Engineering", height=520)
@@ -597,12 +594,12 @@ elif pagina == "📊  Resultados del Modelo":
         tag    = " 🆕" if nombre in NUEVAS else ""
         col_obj.markdown(f"""
         <div style="background:white;border-radius:10px;padding:14px;
-                    border-top:4px solid {USS_RED if nombre in NUEVAS else USS_NAVY};
+                    border-top:4px solid {USS_PRIMARY if nombre in NUEVAS else USS_NAVY};
                     text-align:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
             <div style="font-size:22px;">{emoji}</div>
             <div style="font-weight:700;font-size:13px;color:{USS_NAVY};margin:6px 0 4px;">
                 {nombre}{tag}</div>
-            <div style="font-size:20px;font-weight:800;color:{USS_RED};">{imp:.3f}</div>
+            <div style="font-size:20px;font-weight:800;color:{USS_PRIMARY};">{imp:.3f}</div>
             <div style="font-size:10px;color:#888;">Gini</div>
         </div>
         """, unsafe_allow_html=True)
@@ -625,7 +622,7 @@ elif pagina == "🔮  Predecir Nuevo Dato":
     st.markdown("Ingresa los datos de una persona y el modelo **Random Forest** clasificará su nivel de obesidad según criterios de la **OMS**.")
 
     st.markdown(f"""
-    <div class="uss-card" style="border-left:5px solid {USS_RED};">
+    <div class="uss-card" style="border-left:5px solid {USS_PRIMARY};">
         💡 Completa todos los campos del formulario y presiona <b>Predecir</b>.
         El modelo calculará automáticamente el IMC y retornará la clase con su probabilidad.
     </div>
@@ -697,7 +694,7 @@ elif pagina == "🔮  Predecir Nuevo Dato":
         try:
             clase, proba, clases_le = predecir(datos, R)
             imc     = float(Weight) / float(Height)**2
-            color_c = COLOR_MAP.get(clase, USS_RED)
+            color_c = COLOR_MAP.get(clase, USS_PRIMARY)
             nom_es  = LABEL_MAP.get(clase, clase)
             conf    = proba[list(clases_le).index(clase)]
 
@@ -736,7 +733,7 @@ elif pagina == "🔮  Predecir Nuevo Dato":
                         bar=dict(color=color_c),
                         bgcolor="white",
                         steps=[
-                            dict(range=[0,50],  color="#FAE8EB"),
+                            dict(range=[0,50],  color="USS_LIGHT"),
                             dict(range=[50,75], color="#FDDDE4"),
                             dict(range=[75,100],color="#FBBECB"),
                         ],
